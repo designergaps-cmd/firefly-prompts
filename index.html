@@ -3,51 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adobe Firefly 灵感灵感库</title>
+    <title>Adobe Firefly 灵感库</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f7; padding: 20px; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; }
-        h1 { text-align: center; color: #ff2a5f; font-size: 24px; margin-bottom: 5px; }
-        .subtitle { text-align: center; color: #666; margin-bottom: 25px; font-size: 14px; }
-        .category { font-weight: bold; margin-top: 20px; margin-bottom: 10px; color: #111; border-left: 4px solid #ff2a5f; padding-left: 8px; }
-        .card { background: white; padding: 15px; border-radius: 12px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between; gap: 10px; }
-        .prompt-text { font-size: 14px; color: #444; line-height: 1.4; background: #f9f9fb; padding: 10px; border-radius: 6px; border: 1px solid #eee; }
-        .copy-btn { background: #0066cc; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: background 0.2s; text-align: center; }
-        .copy-btn.copied { background: #34c759; }
+        /* 全局暗黑渐变背景与重置 */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; 
+            background: linear-gradient(135deg, #0d0e12 0%, #1a1c24 50%, #050608 100%);
+            color: #e2e8f0; 
+            min-height: 100vh;
+            padding: 30px 20px;
+            letter-spacing: -0.01em;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 顶部环境发光效果（弥散光晕） */
+        body::before {
+            content: "";
+            position: absolute;
+            top: -10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255, 42, 95, 0.15) 0%, rgba(0, 102, 204, 0.05) 50%, transparent 100%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .container { max-width: 520px; margin: 0 auto; position: relative; z-index: 1; }
+        
+        /* 头部高级排版 */
+        header { text-align: center; margin-bottom: 40px; }
+        h1 { 
+            font-size: 28px; 
+            font-weight: 700; 
+            background: linear-gradient(135deg, #ffffff 30%, #a3a3a3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+        .subtitle { font-size: 14px; color: #8e929e; font-weight: 400; line-height: 1.5; }
+
+        /* 分类标题 */
+        .category { 
+            font-size: 13px; 
+            text-transform: uppercase; 
+            letter-spacing: 0.1em; 
+            color: #64748b; 
+            margin: 30px 0 12px 4px; 
+            font-weight: 600;
+        }
+
+        /* 磨砂玻璃卡片 */
+        .card { 
+            background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 20px; 
+            border-radius: 16px; 
+            margin-bottom: 16px; 
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .card:active { transform: scale(0.99); }
+
+        /* Prompt 文本区域 */
+        .prompt-text { 
+            font-size: 14px; 
+            color: #cbd5e1; 
+            line-height: 1.6; 
+            margin-bottom: 16px; 
+            word-break: break-word;
+            font-family: "SF Mono", SFMono-Regular, Consolas, monospace;
+        }
+
+        /* Firefly 质感的高级红色按钮 */
+        .copy-btn { 
+            width: 100%;
+            background: linear-gradient(135deg, #ff2a5f 0%, #d91443 100%);
+            color: white; 
+            border: none; 
+            padding: 12px; 
+            border-radius: 10px; 
+            font-size: 14px;
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 42, 95, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+        }
+        .copy-btn:hover {
+            opacity: 0.95;
+            box-shadow: 0 6px 20px rgba(255, 42, 95, 0.45);
+        }
+        /* 已复制状态：变成优雅的墨绿色磨砂质感 */
+        .copy-btn.copied { 
+            background: rgba(52, 199, 89, 0.15); 
+            color: #34c759;
+            border: 1px solid rgba(52, 199, 89, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: none;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>🔥 Firefly 快捷灵感库</h1>
-    <div class="subtitle">点击下方按钮复制 Prompt，前往 Firefly 粘贴生成</div>
+    <header>
+        <h1>Adobe Firefly 💡</h1>
+        <div class="subtitle">点击下方按钮复制 Prompt，直接前往 Firefly 粘贴生成</div>
+    </header>
 
-    <div class="category">✨ 奇幻与科幻</div>
+    <div class="category">✨ 奇幻与科幻 / Fantasy</div>
     
     <div class="card">
         <div class="prompt-text" id="p1">A futuristic cyberpunk city at night, glowing neon signs, flying vehicles, rainy weather with reflections on the street, cinematic lighting, 8k resolution --ar 16:9</div>
-        <button class="copy-btn" onclick="copyPrompt('p1', this)">一键复制 Prompt</button>
+        <button class="copy-btn" onclick="copyPrompt('p1', this)">复制创意 Prompt</button>
     </div>
 
     <div class="card">
         <div class="prompt-text" id="p2">A majestic crystal dragon perched on top of a misty mountain peak, sunrise lighting, highly detailed scales, fantasy art style</div>
-        <button class="copy-btn" onclick="copyPrompt('p2', this)">一键复制 Prompt</button>
+        <button class="copy-btn" onclick="copyPrompt('p2', this)">复制创意 Prompt</button>
     </div>
 
-    <div class="category">📸 真实摄影感</div>
+    <div class="category">📸 真实摄影感 / Photography</div>
 
     <div class="card">
         <div class="prompt-text" id="p3">Close-up portrait of an astronaut on Mars, reflections of the red planet in the helmet visor, dramatic sunset lighting, hyper-realistic, photographic quality</div>
-        <button class="copy-btn" onclick="copyPrompt('p3', this)">一键复制 Prompt</button>
+        <button class="copy-btn" onclick="copyPrompt('p3', this)">复制创意 Prompt</button>
     </div>
 
-    <div class="category">🧸 可爱 3D 风</div>
+    <div class="category">🧸 可爱 3D 风 / 3D Toy</div>
     
     <div class="card">
-        <div class="prompt-text" id="p4">Cute 3D fluffy monster, big smiling eyes, vibrant pastel colors, claymation style, soft studio lighting, isolated on a clean background</div>
-        <button class="copy-btn" onclick="copyPrompt('p4', this)">一键复制 Prompt</button>
+        <div class="prompt-text" id="p4">Cute 3D vinyl toy of a cool boy wearing sunglasses and a hoodie, pop mart style, pastel background, soft lighting, trending on artstation, 8k render</div>
+        <button class="copy-btn" onclick="copyPrompt('p4', this)">复制创意 Prompt</button>
     </div>
-
 </div>
 
 <script>
@@ -55,12 +153,12 @@ function copyPrompt(id, btn) {
     const text = document.getElementById(id).innerText;
     navigator.clipboard.writeText(text).then(() => {
         const originalText = btn.innerText;
-        btn.innerText = "✓ 已复制！";
+        btn.innerText = "✓ 已复制到剪贴板";
         btn.classList.add('copied');
         setTimeout(() => {
             btn.innerText = originalText;
             btn.classList.remove('copied');
-        }, 1500);
+        }, 1200);
     }).catch(err => {
         alert('复制失败，请手动长按文本复制');
     });
